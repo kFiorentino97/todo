@@ -13,18 +13,31 @@ function App() {
         color="primary">
           <IonList
           color="secondary">
-            <Task value = "Task #1"/>
-            <Task value = "Task #2"/>
-            <Task value = "Task #3"/>
-            <Task value = "Task #4"/>
-            <Task value = "Task #5"/>
+            <TaskList key="taskList"></TaskList>
           </IonList>
-            <IonButton>Add</IonButton>
-            <IonButton>Remove</IonButton>
+          <AddRemove/>
         </IonContent>
       </header>
     </div>
   );
+}
+
+class TaskList extends React.Component {
+  Tasks: number = 5;
+  constructor(props: any){
+    super(props);
+  }
+  render(){
+    const tasklist: Array<React.ReactNode> = [];
+    for(var i = 0; i < this.Tasks; i++){
+      tasklist.push(
+        <Task value={"Task #" + (i + 1)}/>
+      )
+    }
+    return(
+      tasklist
+    );
+  }
 }
 
 function Task(props: any){
@@ -35,6 +48,15 @@ function Task(props: any){
       <IonButton slot="end" onClick={() => onDelete(props)}>Delete</IonButton>
       <IonButton slot="end" onClick={() => onEdit(props)}>Edit</IonButton>
     </IonItem>
+  )
+}
+
+function AddRemove(props: any){
+  return(
+    <b>
+    <IonButton onClick={() => onAdd(props)}>Add</IonButton>
+    <IonButton onClick={() => onRemove(props)}>Remove</IonButton>
+    </b>
   )
 }
 
@@ -50,4 +72,11 @@ function onCheck(props: any){
 
 }
 
+function onAdd(props: any){
+  props.swag.Tasks++;
+}
+
+function onRemove(props: any){
+  props.swag.Tasks--;
+}
 export default App;
