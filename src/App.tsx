@@ -1,4 +1,5 @@
 import React from 'react';
+import * as ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import './App.css';
 import '@ionic/react/css/core.css';
@@ -13,70 +14,100 @@ function App() {
         color="primary">
           <IonList
           color="secondary">
-            <TaskList key="taskList"></TaskList>
+            <TaskList/>
           </IonList>
-          <AddRemove/>
         </IonContent>
       </header>
     </div>
   );
 }
 
-class TaskList extends React.Component {
-  Tasks: number = 5;
+
+class TaskList extends React.Component<{}, {Tasks: number, messageText: String}> { // TODO: Change Tasks to an Array<String> from number. pass the array down so that the child can change it.
+  /**
+   * A class created to hold a list of tasks. Also contains an Add and Remove button
+   */
   constructor(props: any){
     super(props);
+    this.state = {
+      Tasks : 5,
+      messageText : "String"
+    };
   }
+
+  private onAdd(){
+    this.setState({Tasks: this.state.Tasks + 1});
+  }
+
+  private onRemove(){
+    if(this.state.Tasks > 1){
+      this.setState({Tasks: this.state.Tasks - 1});
+    }
+  }
+
   render(){
+    /**
+     * This will loop and create a list of tasks the size of this.state.Tasks and will include an Add and Remove button at the bottom of the list.
+     */
     const tasklist: Array<React.ReactNode> = [];
-    for(var i = 0; i < this.Tasks; i++){
+    for(var i = 0; i < this.state.Tasks; i++){
       tasklist.push(
-        <Task value={"Task #" + (i + 1)}/>
+        <Task tasks = {i + 1}/>
       )
     }
     return(
-      tasklist
+      <b>
+        {tasklist}
+        <IonItem color="secondary">
+          <IonButton onClick={() => this.onAdd()}>Add</IonButton>
+          <IonButton onClick={() => this.onRemove()}>Remove</IonButton>
+          <IonInput placeholder="Enter text here." slot="end"/>
+        </IonItem>
+      </b>
     );
   }
 }
 
-function Task(props: any){
-  return(
-    <IonItem>
-      <IonCheckbox slot="start" />
-      <IonLabel slot="start">{props.value}</IonLabel>
-      <IonButton slot="end" onClick={() => onDelete(props)}>Delete</IonButton>
-      <IonButton slot="end" onClick={() => onEdit(props)}>Edit</IonButton>
-    </IonItem>
-  )
+class Task extends React.Component<{tasks: number}, {value: String}> {
+  constructor(props: any){
+    super(props);
+    this.state = {
+      value : "",
+    };
+  }
+
+  render(){
+    return(
+      <IonItem>
+        <IonCheckbox slot="start" />
+        <IonLabel slot="start">{"Task #" + this.props.tasks}</IonLabel>
+        <IonButton slot="end" onClick={() => this.onDelete()}>Delete</IonButton>
+        <IonButton slot="end" onClick={() => this.onEdit()}>Edit</IonButton>
+      </IonItem>
+    )
+  }
+
+  onDelete(){
+    alert("Deleted!");
+  }
+
+  onEdit(){
+    this.setState({value: "edited"});
+  }
+
 }
 
-function AddRemove(props: any){
-  return(
-    <b>
-    <IonButton onClick={() => onAdd(props)}>Add</IonButton>
-    <IonButton onClick={() => onRemove(props)}>Remove</IonButton>
-    </b>
-  )
-}
 
 function onDelete(props: any){
   alert("Deleted!");
 }
 
 function onEdit(props: any){
-  alert("Edited!");
+  props.value = "edited";
 }
 
 function onCheck(props: any){
 
 }
 
-function onAdd(props: any){
-  props.swag.Tasks++;
-}
-
-function onRemove(props: any){
-  props.swag.Tasks--;
-}
 export default App;
